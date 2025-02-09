@@ -6,6 +6,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 
 type RootStackParamList = {
   SetBudget: undefined;
+  SpendingTracker: undefined;
 };
 
 export const SetBudgetScreen = () => {
@@ -17,7 +18,7 @@ export const SetBudgetScreen = () => {
     if (isNaN(budgetAmount)) return;
 
     console.log('Budget set to:', budgetAmount);
-    // TODO: Add navigation to the next screen when ready
+    navigation.navigate('SpendingTracker');
   };
 
   return (

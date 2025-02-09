@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { TextInput, Button, List, Surface } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+
+// Add navigation type
+type RootStackParamList = {
+  AddLocations: undefined;
+  SetBudget: undefined;
+};
 
 interface Location {
   id: string;
@@ -8,6 +16,7 @@ interface Location {
 }
 
 export const AddLocationsScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, 'AddLocations'>>();
   const [locationName, setLocationName] = useState('');
   const [locations, setLocations] = useState<Location[]>([]);
 
@@ -83,6 +92,16 @@ export const AddLocationsScreen = () => {
           />
         }
       />
+
+      {/* Add Next button */}
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('SetBudget')}
+        style={styles.nextButton}
+        disabled={locations.length === 0}
+      >
+        Next
+      </Button>
     </View>
   );
 };
@@ -115,6 +134,11 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     color: '#666',
+  },
+  nextButton: {
+    marginTop: 16,
+    marginBottom: 16,
+    padding: 8,
   },
 });
 

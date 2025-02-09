@@ -34,16 +34,18 @@ export const SpendingTrackerScreen = () => {
   const totalSpending = spendingEntries.reduce((sum, entry) => sum + entry.amount, 0);
 
   const renderItem = ({ item }: { item: SpendingEntry }) => (
-    <Surface style={styles.listItem} elevation={1}>
-      <List.Item
-        title={item.description}
-        description={item.date}
-        right={() => (
-          <Text style={styles.amount}>
-            ${item.amount.toFixed(2)}
-          </Text>
-        )}
-      />
+    <Surface style={[styles.listItem ]} elevation={1}>
+      <View style={{ overflow: 'hidden' }}>
+        <List.Item
+          title={item.description}
+          description={item.date}
+          right={() => (
+            <Text style={styles.amount}>
+              ${item.amount.toFixed(2)}
+            </Text>
+          )}
+        />
+      </View>
     </Surface>
   );
 
@@ -107,7 +109,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     borderRadius: 8,
     backgroundColor: 'white',
-    overflow: 'hidden',
   },
   amount: {
     alignSelf: 'center',

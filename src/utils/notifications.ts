@@ -55,4 +55,18 @@ export const sendTestNotification = async () => {
   } catch (error) {
     console.error('Error sending test notification:', error);
   }
+};
+
+export const sendLocationNotification = async (locationName: string) => {
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You're near a spending location! 📍",
+        body: `You're close to ${locationName}. Remember to track your spending!`,
+      },
+      trigger: null,
+    });
+  } catch (error) {
+    console.error('Error sending location notification:', error);
+  }
 }; 

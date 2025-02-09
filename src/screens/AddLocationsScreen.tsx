@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList } from 'react-native';
 import { TextInput, Button, List, Surface } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import * as Location from 'expo-location';
 
 // Add navigation type
 type RootStackParamList = {
@@ -13,6 +14,8 @@ type RootStackParamList = {
 interface Location {
   id: string;
   name: string;
+  latitude: number;
+  longitude: number;
 }
 
 export const AddLocationsScreen = () => {
@@ -20,16 +23,31 @@ export const AddLocationsScreen = () => {
   const [locationName, setLocationName] = useState('');
   const [locations, setLocations] = useState<Location[]>([]);
 
-  const handleSaveLocation = () => {
+  const handleSaveLocation = async () => {
     if (!locationName.trim()) return;
     
-    const newLocation: Location = {
-      id: Date.now().toString(), // Simple unique ID for MVP
-      name: locationName.trim(),
-    };
-    
-    setLocations(currentLocations => [...currentLocations, newLocation]);
-    setLocationName(''); // Clear input after saving
+    try {
+      // Get current location when saving a place
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission denied');
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      
+      const newLocation: Location = {
+        id: Date.now().toString(),
+        name: locationName.trim(),
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      };
+      
+      setLocations(currentLocations => [...currentLocations, newLocation]);
+      setLocationName('');
+    } catch (error) {
+      console.error('Error saving location:', error);
+    }
   };
 
   const handleRemoveLocation = (id: string) => {
@@ -40,8 +58,9 @@ export const AddLocationsScreen = () => {
 
   const renderItem = ({ item }: { item: Location }) => (
     <Surface style={styles.listItem} elevation={1}>
-      <List.Item
-        title={item.name}
+      <View style={{ overflow: 'hidden' }}>
+        <List.Item
+          title={item.name}
         right={props => (
           <Button
             {...props}
@@ -50,9 +69,10 @@ export const AddLocationsScreen = () => {
             textColor="red"
           >
             Remove
-          </Button>
-        )}
-      />
+            </Button>
+          )}
+        />
+      </View>
     </Surface>
   );
 
